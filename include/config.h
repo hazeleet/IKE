@@ -2,7 +2,7 @@
 #define __CONFIG_H__
 
 #include <libconfig.h>
-#include "network.h"
+#include "netype.h"
 
 typedef struct {
   struct {
