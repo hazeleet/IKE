@@ -2,20 +2,11 @@
 #include "log.h"
 
 #include <stdlib.h>
-#include <stdio.h>
 
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <pthread.h>
 
-typedef struct {
-	chunk_t*	data;
-	ip4_addr	src;
-	ip4_addr	dst;
-}_packet_t;
-
-_packet_t*	_pkt_create();
-void				_pkt_free(_packet_t* pkt);
 void*				_receiving(void* arg);
 void*				_sending(void* arg);
 
@@ -41,50 +32,25 @@ network_t* net_create()
 
 void net_free(network_t* net)
 {
-	_packet_t* d;
+	packet_t* d;
 	for(d = dequeue(net->q_send); d != NULL; d = dequeue(net->q_send))
-		_pkt_free(d);
+		pkt_free(d);
 	for(d = dequeue(net->q_recv); d != NULL; d = dequeue(net->q_recv))
-		_pkt_free(d);
+		pkt_free(d);
 
 	free(net->q_send);
 	free(net->q_recv);
 	free(net);
 }
 
-_packet_t* _pkt_create()
+void net_send(network_t* net, packet_t* pkt)
 {
-	_packet_t* pkt = calloc(1, sizeof(_packet_t));
-
-	return pkt;
-}
-
-void _pkt_free(_packet_t* pkt)
-{
-	if(pkt->data)
-		chk_free(pkt->data);
-	free(pkt);
-}
-
-void net_send(network_t* net, chunk_t* data, ip4_addr src, ip4_addr dst)
-{
-	_packet_t* pkt = _pkt_create();
-	pkt->data = data;
-	pkt->src = src;
-	pkt->dst = dst;
-
 	enqueue(net->q_send, pkt);
 }
 
-chunk_t* net_recv(network_t* net, ip4_addr* src, ip4_addr* dst)
+packet_t* net_recv(network_t* net)
 {
-	_packet_t* pkt = dequeue(net->q_recv);
-	chunk_t* chk = pkt->data;
-
-	*src = pkt->src;
-	*dst = pkt->dst;
-
-	return chk;
+	return dequeue(net->q_recv);
 }
 
 void* _receiving(void* arg)
@@ -127,7 +93,7 @@ void* _receiving(void* arg)
 				if(cm->cmsg_level == IPPROTO_IP) {
 					pktinfo = (struct in_pktinfo*)CMSG_DATA(cm);
 
-					_packet_t* pkt = _pkt_create();
+					packet_t* pkt = pkt_create();
 					pkt->data = chk_create();
 					chk_write(pkt->data, buf, recv_len);
 					pkt->src = client.sin_addr.s_addr;
@@ -154,12 +120,12 @@ void* _sending(void* arg)
 	addr.sin_port = net->port;
 
 	while(1) {
-		_packet_t* pkt = dequeue(net->q_send);
+		packet_t* pkt = dequeue(net->q_send);
 		addr.sin_addr.s_addr = pkt->dst;
 
 		sendto(net->sock, pkt->data->ptr, pkt->data->size, 0, (struct sockaddr*)&addr, sizeof(addr));
 		logging(DBG, "[NET] Send %d-byte packet\n", pkt->data->size);
-		_pkt_free(pkt);
+		pkt_free(pkt);
 	}
 }
 
@@ -172,23 +138,3 @@ void net_running(network_t* net)
 	logging(ALL, "[NET] Start Receiving\n");
 }
 
-ip4_addr net_stoa(const char* ipstr)
-{
-	uint32_t a,b,c,d;
-
-	if(sscanf(ipstr, "%u.%u.%u.%u", &a, &b, &c, &d) == 4) {
-		ip4_addr result = d + (c<<8) + (b<<16) + (a<<24);
-		return result;
-	}
-
-	return 0;
-}
-
-void net_atos(ip4_addr addr, char* ipstr, int ipstr_len)
-{
-	snprintf(ipstr, ipstr_len, "%u.%u.%u.%u",
-			(addr) & 0xFF,
-			(addr>>8) & 0xFF,
-			(addr>>16) & 0xFF,
-			(addr>>24) & 0xFF);
-}

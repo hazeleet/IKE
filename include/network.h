@@ -2,12 +2,7 @@
 #define __NETWORK_H__
 
 #include "queue.h"
-#include "chunk.h"
-
-#include <stdint.h>
-
-typedef uint32_t ip4_addr;
-#define IPSTR_LEN   4*3+4
+#include "netype.h"
 
 typedef struct {
   int       sock;
@@ -18,12 +13,9 @@ typedef struct {
 
 network_t*  net_create();
 void        net_free(network_t* net);
-void        net_send(network_t* net, chunk_t* data, ip4_addr src, ip4_addr dst);
-chunk_t*    net_recv(network_t* net, ip4_addr* src, ip4_addr* dst);
+void        net_send(network_t* net, packet_t* pkt);
+packet_t*   net_recv(network_t* net);
 
 void        net_running(network_t* net);
-
-ip4_addr    net_stoa(const char* ipstr);
-void        net_atos(ip4_addr addr, char* ipstr, int ipstr_len);
 
 #endif //__NETWORK_H__
