@@ -8,6 +8,7 @@ int main() {
 	daemon_create();
 
 	net_running(IKE.net);
+	daemon_running();
 	while(1);
 
 	return 0;

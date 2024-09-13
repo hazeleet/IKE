@@ -15,4 +15,6 @@ extern daemon_t IKE;
 
 void daemon_create();
 
+void daemon_running();
+
 #endif //__DAEMON_H__
