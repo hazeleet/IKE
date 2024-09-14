@@ -4,11 +4,13 @@
 #include "network.h"
 #include "log.h"
 #include "config.h"
+#include "samanager.h"
 
 typedef struct {
   log_t*        log;
   network_t*    net;
   configure_t*  cfg;
+  samanager_t*  sam;
 }daemon_t;
 
 extern daemon_t IKE;

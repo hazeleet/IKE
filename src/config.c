@@ -36,5 +36,8 @@ configure_t* cfg_create(const char* filename)
 
 	_parsing(cfg, filename);
 
+	// NEXT!!
+	// Make sa
+
 	return cfg;
 }

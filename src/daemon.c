@@ -5,6 +5,7 @@ daemon_t IKE;
 void daemon_create()
 {
 	IKE.log = log_create();
+	IKE.sam = sam_create();
 	IKE.cfg = cfg_create("conf/sample.conf");
 	IKE.net = net_create();
 }
@@ -18,6 +19,6 @@ void daemon_running()
 		net_atos(pkt->dst, dst, IPSTR_LEN);
 		logging(DBG, "[DMN] Receive %d-byte packet(%s->%s)\n",
 				pkt->data->size, src, dst);
-		// Traveling sas
+		sam_match(IKE.sam, pkt);
 	}
 }
