@@ -22,7 +22,7 @@ ip4_addr net_stoa(const char* ipstr)
 	uint32_t a,b,c,d;
 
 	if(sscanf(ipstr, "%u.%u.%u.%u", &a, &b, &c, &d) == 4) {
-		ip4_addr result = d + (c<<8) + (b<<16) + (a<<24);
+		ip4_addr result = a + (b<<8) + (c<<16) + (d<<24);
 		return result;
 	}
 
