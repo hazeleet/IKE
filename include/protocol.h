@@ -1,5 +1,5 @@
-#ifndef __PAYLOAD_H__
-#define __PAYLOAD_H__
+#ifndef __PROTOCOL_H__
+#define __PROTOCOL_H__
 
 typedef enum {
   PLD_NO = 0,
@@ -19,18 +19,13 @@ typedef enum {
   PLD_SK = 46,
   PLD_CP = 47,
   PLD_EAP = 48
-}PAYLOAD_TYPE;
+}payload_type;
 
-typedef struct payload_t payload_t;
+typedef enum {
+  IKE_SA_INIT = 34,
+  IKE_AUTH = 35,
+  CREATE_CHILD_SA = 36,
+  INFORMATIONAL = 37
+}exchange_type;
 
-struct payload_t {
-  PAYLOAD_TYPE  type;
-  void*         body;
-
-  PAYLOAD_TYPE  next_type;
-  payload_t*    next;
-};
-
-payload_t*  pld_create(PAYLOAD_TYPE type);
-
-#endif //__PAYLOAD_H__
+#endif //__PROTOCOL_H__

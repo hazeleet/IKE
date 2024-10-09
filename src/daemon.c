@@ -1,6 +1,9 @@
 #include "daemon.h"
+#include <pthread.h>
 
 daemon_t IKE;
+
+void*	_running();
 
 void daemon_create()
 {
@@ -10,7 +13,7 @@ void daemon_create()
 	IKE.net = net_create();
 }
 
-void daemon_running()
+void*	_running()
 {
 	char src[IPSTR_LEN], dst[IPSTR_LEN];
 	while(1) {
@@ -21,4 +24,12 @@ void daemon_running()
 				pkt->data->size, src, dst);
 		sam_match(IKE.sam, pkt);
 	}
+}
+
+void daemon_running()
+{
+	pthread_t tid;
+	pthread_create(&tid, NULL, _running, NULL);
+
+	// conf => sa
 }
