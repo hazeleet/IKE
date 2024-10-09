@@ -31,5 +31,14 @@ void daemon_running()
 	pthread_t tid;
 	pthread_create(&tid, NULL, _running, NULL);
 
-	// conf => sa
+	for(cfg_peer_t* peer = IKE.cfg->peers;
+			peer != NULL;
+			peer = peer->next) {
+		sa_t* sa = sa_create();
+		sa->left.addr = peer->left.addr;
+		sa->right.addr = peer->right.addr;
+		sam_push(IKE.sam, sa);
+
+		// IKE_SA_INIT make&send
+	}
 }
