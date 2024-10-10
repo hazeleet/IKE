@@ -1,7 +1,10 @@
 #include "samanager.h"
 #include "daemon.h"
+#include "utils.h"
 
 #include <stdlib.h>
+
+void _ike_sa_init_i(sa_t* sa);
 
 samanager_t* sam_create()
 {
@@ -16,6 +19,9 @@ void sam_push(samanager_t* sam, sa_t* sa)
 	if(sam->sas)
 		sam->sas->prev = sa;
 	sam->sas = sa;
+
+	// IKE_SA_INIT make&send
+	_ike_sa_init_i(sa);
 }
 
 sa_t* sa_create()
@@ -33,10 +39,24 @@ void sam_match(samanager_t* sam, packet_t* pkt)
 			net_atos(sa->left.addr, left, IPSTR_LEN);
 			net_atos(sa->right.addr, right, IPSTR_LEN);
 			logging(DBG, "[SAM] Matched %s:%s\n", left, right);
+			// switch by state
 			return;
 		}
 	}
 	net_atos(pkt->dst, left, IPSTR_LEN);
 	net_atos(pkt->src, right, IPSTR_LEN);
 	logging(DBG, "[SAM] NotMatched %s:%s\n", left, right);
+}
+
+void _ike_sa_init_i(sa_t* sa)
+{
+	sa->is_initiator = true;
+	sa->SPIi = get_rand(64);
+	sa->message_id = 0;
+
+	// SA
+	// KE
+	// Nx
+	// send
+	// change state
 }

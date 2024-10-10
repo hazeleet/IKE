@@ -17,7 +17,7 @@ struct sa_t {
   }left, right;
 
   bool      is_initiator;
-  uint64_t  SPIi, SPIr;
+  chunk_t   *SPIi, *SPIr;
   uint32_t  message_id;
   uint8_t   major_version, minor_version;
   exchange_type last_exchange;

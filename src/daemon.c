@@ -38,7 +38,5 @@ void daemon_running()
 		sa->left.addr = peer->left.addr;
 		sa->right.addr = peer->right.addr;
 		sam_push(IKE.sam, sa);
-
-		// IKE_SA_INIT make&send
 	}
 }
