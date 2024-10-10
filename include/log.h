@@ -1,6 +1,8 @@
 #ifndef __LOG_H__
 #define __LOG_H__
 
+#include "chunk.h"
+
 typedef enum {
   ALL = 0,
   DBG,
@@ -17,5 +19,6 @@ log_t*  log_create();
 void    log_free(log_t* log);
 
 void    logging(log_level_t lev, const char* fmt, ...);
+void    logging_hex(log_level_t lev, chunk_t* chk);
 
 #endif //__LOG_H__
