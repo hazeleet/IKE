@@ -7,7 +7,7 @@ chunk_t* get_rand(int bytes)
 	chunk_t* chk = chk_create();
 	unsigned char* buf = malloc(bytes);
 
-	srand(time(NULL));
+	srand(time(NULL)+(*buf));
 	for(int i = 0; i < bytes; i++)
 		buf[i] = rand();
 
