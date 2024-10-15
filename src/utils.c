@@ -16,3 +16,11 @@ chunk_t* get_rand(int bytes)
 
 	return chk;
 }
+
+uint64_t get_spi()
+{
+	uint64_t spi;
+	srand(time(NULL)+(*((unsigned int*)&spi)));
+	spi = rand() | ((uint64_t)rand())<<32;
+	return spi;
+}
