@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
 
 	daemon_create(arguments);
 
-	net_running(IKE.net);
+	net_running();
 	daemon_running();
 	while(1);
 

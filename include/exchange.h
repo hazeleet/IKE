@@ -6,7 +6,7 @@
 #include "chunk.h"
 
 typedef struct {
-  ike_header_t*   header;
+  ike_header_t    header;
   payload_t*      payloads;
 }exchange_t;
 

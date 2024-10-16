@@ -4,7 +4,7 @@
 #include "network.h"
 #include "log.h"
 #include "config.h"
-#include "samanager.h"
+#include "sa.h"
 
 typedef struct {
 	int daemon_mode;
@@ -15,7 +15,7 @@ typedef struct {
   log_t*        log;
   network_t*    net;
   configure_t*  cfg;
-  samanager_t*  sam;
+  sa_t*         sas;
 }daemon_t;
 
 extern daemon_t IKE;

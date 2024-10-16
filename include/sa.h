@@ -1,5 +1,5 @@
-#ifndef __SAMANAGER_H__
-#define __SAMANAGER_H__
+#ifndef __SA_H__
+#define __SA_H__
 
 #include "netype.h"
 #include "ike_protocol.h"
@@ -26,14 +26,7 @@ struct sa_t {
   sa_t*   next;
 };
 
-typedef struct {
-  sa_t*   sas;
-}samanager_t;
+sa_t*  sa_create();
+void   sa_push(sa_t* sa);
 
-samanager_t*  sam_create();
-void          sam_push(samanager_t* sam, sa_t* sa);
-void          sam_match(samanager_t* sam, packet_t* pkt);
-
-sa_t*         sa_create();
-
-#endif //__SAMANAGER_H__
+#endif //__SA_H__

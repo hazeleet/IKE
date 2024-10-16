@@ -8,7 +8,7 @@ void*	_running();
 void daemon_create(daemon_args_t args)
 {
 	IKE.log = log_create();
-	IKE.sam = sam_create();
+	IKE.sas = NULL;
 	IKE.cfg = cfg_create(args.conf_file);
 	IKE.net = net_create();
 }
@@ -24,9 +24,9 @@ void*	_running()
 		logging(DBG, "[DMN] Receive %d-byte packet(%s->%s)\n",
 				data->size, bsrc, bdst);
 		// Match
-		for(sa_t* sa = IKE.sam->sas; sa != NULL; sa = sa->next) {
+		for(sa_t* sa = IKE.sas; sa != NULL; sa = sa->next) {
 			if(sa->left.addr == dst && sa->right.addr == src) {
-				logging(DBG, "[SAM] Matched %s:%s\n", bsrc, bdst);
+				logging(DBG, "[DMN] Matched %s:%s\n", bsrc, bdst);
 				// switch by state
 			}
 		}
@@ -45,6 +45,6 @@ void daemon_running()
 		sa_t* sa = sa_create();
 		sa->left.addr = peer->left.addr;
 		sa->right.addr = peer->right.addr;
-		sam_push(IKE.sam, sa);
+		sa_push(sa);
 	}
 }

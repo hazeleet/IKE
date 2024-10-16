@@ -11,6 +11,7 @@ exchange_t* exg_create()
 chunk_t* exg_pack(exchange_t* exg)
 {
 	chunk_t* packed = chk_create();
+	chk_write(packed, &exg->header.SPIi, 8);
 
 	return packed;
 }
