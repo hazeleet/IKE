@@ -5,11 +5,11 @@ daemon_t IKE;
 
 void*	_running();
 
-void daemon_create()
+void daemon_create(daemon_args_t args)
 {
 	IKE.log = log_create();
 	IKE.sam = sam_create();
-	IKE.cfg = cfg_create("conf/sample.conf");
+	IKE.cfg = cfg_create(args.conf_file);
 	IKE.net = net_create();
 }
 

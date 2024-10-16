@@ -7,6 +7,11 @@
 #include "samanager.h"
 
 typedef struct {
+	int daemon_mode;
+	char* conf_file;
+}daemon_args_t;
+
+typedef struct {
   log_t*        log;
   network_t*    net;
   configure_t*  cfg;
@@ -15,7 +20,7 @@ typedef struct {
 
 extern daemon_t IKE;
 
-void daemon_create();
+void daemon_create(daemon_args_t args);
 
 void daemon_running();
 

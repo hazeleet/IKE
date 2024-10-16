@@ -8,7 +8,7 @@ SRCS = $(wildcard $(SRCDIR)/*.c)
 HDRS = $(wildcard $(SRCDIR)/*.h)
 OBJS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 
-CFLAGS = -Wall -Wextra -lconfig
+CFLAGS = -Wall -Wextra -lconfig -largp
 
 ifeq ($(shell id -u), 0)
 all: clean prepare run
