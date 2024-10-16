@@ -12,10 +12,10 @@ typedef struct {
 }network_t;
 
 network_t*  net_create();
-void        net_free(network_t* net);
-void        net_send(network_t* net, packet_t* pkt);
-packet_t*   net_recv(network_t* net);
+void        net_free();
+void        net_send(chunk_t* data, ip4_addr src, ip4_addr dst);
+chunk_t*    net_recv(ip4_addr *src, ip4_addr *dst);
 
-void        net_running(network_t* net);
+void        net_running();
 
 #endif //__NETWORK_H__

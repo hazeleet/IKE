@@ -15,14 +15,22 @@ void daemon_create(daemon_args_t args)
 
 void*	_running()
 {
-	char src[IPSTR_LEN], dst[IPSTR_LEN];
+	ip4_addr src, dst;
+	char bsrc[IPSTR_LEN], bdst[IPSTR_LEN];
 	while(1) {
-		packet_t* pkt = net_recv(IKE.net);
-		net_atos(pkt->src, src, IPSTR_LEN);
-		net_atos(pkt->dst, dst, IPSTR_LEN);
+		chunk_t* data = net_recv(&src, &dst);
+		net_atos(src, bsrc, IPSTR_LEN);
+		net_atos(dst, bdst, IPSTR_LEN);
 		logging(DBG, "[DMN] Receive %d-byte packet(%s->%s)\n",
-				pkt->data->size, src, dst);
-		sam_match(IKE.sam, pkt);
+				data->size, bsrc, bdst);
+		// Match
+		for(sa_t* sa = IKE.sam->sas; sa != NULL; sa = sa->next) {
+			if(sa->left.addr == dst && sa->right.addr == src) {
+				logging(DBG, "[SAM] Matched %s:%s\n", bsrc, bdst);
+				// switch by state
+			}
+		}
+		//logging(DBG, "[SAM] NotMatched %s:%s\n", bsrc, bdst);
 	}
 }
 

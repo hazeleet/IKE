@@ -1,3 +1,4 @@
+#include "daemon.h"
 #include "network.h"
 #include "log.h"
 
@@ -30,8 +31,9 @@ network_t* net_create()
 	return net;
 }
 
-void net_free(network_t* net)
+void net_free()
 {
+	network_t* net = IKE.net;
 	packet_t* d;
 	for(d = dequeue(net->q_send); d != NULL; d = dequeue(net->q_send))
 		pkt_free(d);
@@ -43,14 +45,24 @@ void net_free(network_t* net)
 	free(net);
 }
 
-void net_send(network_t* net, packet_t* pkt)
+void net_send(chunk_t* data, ip4_addr src, ip4_addr dst)
 {
-	enqueue(net->q_send, pkt);
+	packet_t* pkt = pkt_create();
+	pkt->data = data;
+	pkt->src = src;
+	pkt->dst = dst;
+	enqueue(IKE.net->q_send, pkt);
 }
 
-packet_t* net_recv(network_t* net)
+chunk_t* net_recv(ip4_addr *src, ip4_addr *dst)
 {
-	return dequeue(net->q_recv);
+	packet_t* pkt = dequeue(IKE.net->q_recv);
+	chunk_t* data = pkt->data;
+	if(src) *src = pkt->src;
+	if(dst) *dst = pkt->dst;
+	free(pkt);
+
+	return data;
 }
 
 void* _receiving(void* arg)
@@ -129,12 +141,11 @@ void* _sending(void* arg)
 	}
 }
 
-void net_running(network_t* net)
+void net_running()
 {
 	pthread_t tid;
-	pthread_create(&tid, NULL, _sending, net);
+	pthread_create(&tid, NULL, _sending, IKE.net);
 	logging(ALL, "[NET] Start Sending\n");
-	pthread_create(&tid, NULL, _receiving, net);
+	pthread_create(&tid, NULL, _receiving, IKE.net);
 	logging(ALL, "[NET] Start Receiving\n");
 }
-
