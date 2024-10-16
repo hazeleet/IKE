@@ -33,6 +33,7 @@ void _ike_sa_init_i(sa_t* sa)
 
 	exchange_t* exg = exg_create();
 	exg->header.SPIi = sa->SPIi;
+	exg->header.exchange_type = IKE_SA_INIT;
 
 	// SA
 	// KE

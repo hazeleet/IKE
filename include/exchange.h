@@ -13,5 +13,6 @@ typedef struct {
 exchange_t* exg_create();
 void        exg_push(exchange_t* exg, payload_t* pld);
 chunk_t*    exg_pack(exchange_t* exg);
+exchange_t* exg_unpack(chunk_t* packed);
 
 #endif //__EXCHANGE_H__
