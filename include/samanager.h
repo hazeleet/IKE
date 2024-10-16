@@ -2,7 +2,7 @@
 #define __SAMANAGER_H__
 
 #include "netype.h"
-#include "protocol.h"
+#include "ike_protocol.h"
 
 typedef enum {
   INIT = 0,
@@ -17,10 +17,10 @@ struct sa_t {
   }left, right;
 
   bool      is_initiator;
-  chunk_t   *SPIi, *SPIr;
+  uint64_t  SPIi, SPIr;
   uint32_t  message_id;
   uint8_t   major_version, minor_version;
-  exchange_type last_exchange;
+  ike_exchange_type last_exchange;
 
   sa_t*   prev;
   sa_t*   next;

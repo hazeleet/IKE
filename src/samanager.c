@@ -1,6 +1,7 @@
 #include "samanager.h"
 #include "daemon.h"
 #include "utils.h"
+#include "exchange.h"
 
 #include <stdlib.h>
 
