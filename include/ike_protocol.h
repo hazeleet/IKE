@@ -5,6 +5,7 @@
 
 #define IKE_HEADER_LENGTH 28
 #define IKE_PAYLOAD_HEADER_LENGTH 4
+#define IKE_PAYLOAD_KE_FIXED_LENGTH 4
 
 typedef enum {
   PLD_NO = 0,
@@ -60,13 +61,13 @@ typedef enum {
   ENCR_NULL       = 11,
   ENCR_AES_CBC    = 12,
   ENCR_AES_CTR    = 13,
-}ike_transform_encr_id;
+}ike_encr_id;
 
 typedef enum {
   PRF_HMAC_MD5    = 1,
   PRF_HMAC_SHA1   = 2,
   PRF_HMAC_TIGER  = 3,
-}ike_transform_prf_id;
+}ike_prf_id;
 
 typedef enum {
   AUTH_NONE         = 0,
@@ -75,7 +76,7 @@ typedef enum {
   AUTH_DES_MAC      = 3,
   AUTH_KPDK_MD5     = 4,
   AUTH_AES_XCBC_96  = 5,
-}ike_transform_integ_id;
+}ike_integ_id;
 
 typedef enum {
   MODP_NONE   = 0,
@@ -87,12 +88,12 @@ typedef enum {
   MODP_4096   = 16,
   MODP_6144   = 17,
   MODP_8192   = 18,
-}ike_transform_dh_id;
+}ike_dh_id;
 
 typedef enum {
   ESN_0     = 0,
   ESN_1     = 1,
-}ike_transform_esn_id;
+}ike_esn_id;
 
 typedef struct {
   uint64_t  SPIi;

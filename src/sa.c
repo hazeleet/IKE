@@ -31,6 +31,8 @@ void _ike_sa_init_i(sa_t* sa)
 	sa->SPIi = get_spi();
 	sa->message_id = 0;
 	sa->Ni = get_rand(20);
+	sa->DH.group = MODP_1024;
+	sa->DH.key = get_rand(1024/8);
 
 	exchange_t* exg = exg_create();
 	exg->header.SPIi = sa->SPIi;
@@ -38,6 +40,9 @@ void _ike_sa_init_i(sa_t* sa)
 
 	// SA
 	// KE
+	payload_t* KE = pld_create(PLD_KE);
+	pld_ke_set(KE, sa->DH.group, sa->DH.key);
+	exg_push(exg, KE);
 	// Nx
 	payload_t* Ni = pld_create(PLD_Nx);
 	pld_nx_set(Ni, sa->Ni);

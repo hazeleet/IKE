@@ -24,6 +24,12 @@ chunk_t* pld_pack(payload_t* pld)
 		case PLD_Nx:
 			chk_write(packed, pld->body.Nx.data, pld->header.length - IKE_PAYLOAD_HEADER_LENGTH);
 			break;
+		case PLD_KE:
+			chk_write(packed, &pld->body.KE.dh_group, 2);
+			chk_write(packed, &pld->body.KE.reserved, 2);
+			chk_write(packed, pld->body.KE.data,
+					pld->header.length - IKE_PAYLOAD_HEADER_LENGTH - IKE_PAYLOAD_KE_FIXED_LENGTH);
+			break;
 	}
 
 	if(pld->next) {
@@ -55,6 +61,18 @@ payload_t* pld_unpack(chunk_t* packed, ike_payload_type type)
 				logging_hex(DBG, pld->body.Nx.data, nonce_size);
 			}
 			break;
+		case PLD_KE:
+			{
+				int key_size = pld->header.length - IKE_PAYLOAD_HEADER_LENGTH - IKE_PAYLOAD_KE_FIXED_LENGTH;
+				chk_read(packed, &pld->body.KE.dh_group, 2);
+				chk_read(packed, &pld->body.KE.reserved, 2);
+				pld->body.KE.data = calloc(1, key_size);
+				chk_read(packed, pld->body.KE.data, key_size);
+				logging(DBG, "      dh: %d\n", pld->body.KE.dh_group);
+				logging(DBG, "      key: \n");
+				logging_hex(DBG, pld->body.KE.data, key_size);
+			}
+			break;
 	}
 	if(pld->header.next_payload != PLD_NO) {
 		pld->next = pld_unpack(packed, pld->header.next_payload);
@@ -68,4 +86,12 @@ void pld_nx_set(payload_t* pld, chunk_t* nonce)
 	pld->header.length += nonce->size;
 	pld->body.Nx.data = calloc(1, nonce->size);
 	memcpy(pld->body.Nx.data, nonce->ptr, nonce->size);
+}
+
+void pld_ke_set(payload_t* pld, ike_dh_id dh, chunk_t* key)
+{
+	pld->header.length += IKE_PAYLOAD_KE_FIXED_LENGTH + key->size;
+	pld->body.KE.dh_group = dh;
+	pld->body.KE.data = calloc(1, key->size);
+	memcpy(pld->body.KE.data, key->ptr, key->size);
 }

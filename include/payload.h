@@ -24,4 +24,7 @@ payload_t*    pld_unpack(chunk_t* packed, ike_payload_type type);
 // Nx
 void          pld_nx_set(payload_t* pld, chunk_t* nonce);
 
+// KE
+void          pld_ke_set(payload_t* pld, ike_dh_id dh, chunk_t* key);
+
 #endif //__PAYLOAD_H__

@@ -23,6 +23,10 @@ struct sa_t {
   ike_exchange_type last_exchange;
 
   chunk_t   *Ni, *Nr;
+  struct {
+    ike_dh_id   group;
+    chunk_t*    key;
+  }DH;
 
   sa_t*   prev;
   sa_t*   next;
