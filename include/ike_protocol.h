@@ -33,6 +33,67 @@ typedef enum {
   INFORMATIONAL = 37
 }ike_exchange_type;
 
+typedef enum {
+  PROTOCOL_IKE  = 1,
+  PROTOCOL_AH   = 2,
+  PROTOCOL_ESP  = 3,
+}ike_protocol_id;
+
+typedef enum {
+  ENCR  = 1,
+  PRF   = 2,
+  INTEG = 3,
+  DH    = 4,
+  ESN   = 5,
+}ike_transform_type;
+
+typedef enum {
+  ENCR_DES_IV64   = 1,
+  ENCR_DES        = 2,
+  ENCR_3DES       = 3,
+  ENCR_RCS        = 4,
+  ENCR_IDEA       = 5,
+  ENCR_CAST       = 6,
+  ENCR_BLOWFISH   = 7,
+  ENCR_3IDEA      = 8,
+  ENCR_DES_IV32   = 9,
+  ENCR_NULL       = 11,
+  ENCR_AES_CBC    = 12,
+  ENCR_AES_CTR    = 13,
+}ike_transform_encr_id;
+
+typedef enum {
+  PRF_HMAC_MD5    = 1,
+  PRF_HMAC_SHA1   = 2,
+  PRF_HMAC_TIGER  = 3,
+}ike_transform_prf_id;
+
+typedef enum {
+  AUTH_NONE         = 0,
+  AUTH_HMAC_MD5_96  = 1,
+  AUTH_HMAC_SHA1_96 = 2,
+  AUTH_DES_MAC      = 3,
+  AUTH_KPDK_MD5     = 4,
+  AUTH_AES_XCBC_96  = 5,
+}ike_transform_integ_id;
+
+typedef enum {
+  MODP_NONE   = 0,
+  MODP_768    = 1,
+  MODP_1024   = 2,
+  MODP_1536   = 5,
+  MODP_2048   = 14,
+  MODP_3072   = 15,
+  MODP_4096   = 16,
+  MODP_6144   = 17,
+  MODP_8192   = 18,
+}ike_transform_dh_id;
+
+typedef enum {
+  ESN_0     = 0,
+  ESN_1     = 1,
+}ike_transform_esn_id;
+
 typedef struct {
   uint64_t  SPIi;
   uint64_t  SPIr;
@@ -92,6 +153,5 @@ typedef struct {
 typedef struct {
   ike_proposal_t*   proposals;
 }ike_payload_sa_t;
-
 
 #endif //__IKE_PROTOCOL_H__
