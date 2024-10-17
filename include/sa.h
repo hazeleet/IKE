@@ -22,6 +22,8 @@ struct sa_t {
   uint8_t   major_version, minor_version;
   ike_exchange_type last_exchange;
 
+  chunk_t   *Ni, *Nr;
+
   sa_t*   prev;
   sa_t*   next;
 };

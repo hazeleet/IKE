@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+#define IKE_HEADER_LENGTH 28
+#define IKE_PAYLOAD_HEADER_LENGTH 4
+
 typedef enum {
   PLD_NO = 0,
   PLD_SA = 33,

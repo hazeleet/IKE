@@ -29,15 +29,6 @@ void*	_running()
 			if(sa->left.addr == dst && sa->right.addr == src) {
 				logging(DBG, "[DMN] Matched %s:%s\n", bsrc, bdst);
 				exchange_t* exg = exg_unpack(data);
-				logging(DBG, "[DWN] unpacking\n");
-				logging(DBG, "      SPIi: 0x%llX\n", exg->header.SPIi);
-				logging(DBG, "      SPIr: 0x%llX\n", exg->header.SPIr);
-				logging(DBG, "      next pld: %d\n", exg->header.next_payload);
-				logging(DBG, "      version: %d\n", exg->header.version);
-				logging(DBG, "      type: %d\n", exg->header.exchange_type);
-				logging(DBG, "      flags: 0x%X\n", exg->header.flags);
-				logging(DBG, "      message id: %d\n", exg->header.message_id);
-				logging(DBG, "      length: %d\n", exg->header.length);
 				// switch by state
 			}
 		}
