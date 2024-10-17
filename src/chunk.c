@@ -45,6 +45,11 @@ void _chk_write(chunk_t* chk, void* data, int size, bool reverse)
 	}
 }
 
+void chk_write_chk(chunk_t* chk, chunk_t* src)
+{
+	_chk_write(chk, src->ptr, src->size, false);
+}
+
 void _chk_read(chunk_t* chk, void* dest, int size, bool reverse)
 {
 	if(size > 0) {
@@ -67,7 +72,10 @@ void _chk_read(chunk_t* chk, void* dest, int size, bool reverse)
 	}
 }
 
-void _chk_merge(chunk_t* dst, chunk_t* src, bool reverse)
+void chk_read_chk(chunk_t* chk, chunk_t* dest, int size)
 {
-	_chk_write(dst, src->ptr, src->size, reverse);
+	void* tmp = calloc(1, size);
+	_chk_read(chk, tmp, size, false);
+	_chk_write(dest, tmp, size, false);
+	free(tmp);
 }
