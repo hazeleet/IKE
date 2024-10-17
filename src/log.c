@@ -29,7 +29,7 @@ void logging(log_level_t lev, const char* fmt, ...)
 	}
 }
 
-void logging_hex(log_level_t lev, chunk_t* chk)
+void logging_hex(log_level_t lev, void* data, int size)
 {
 	// width is fixed size; 16
 	char hbuf[49] = {'\0',};	// hex buffer
@@ -37,8 +37,8 @@ void logging_hex(log_level_t lev, chunk_t* chk)
 
 	// i is chunks's index
 	// j is hex&char buf's index
-	for(int i = 0, j = 0; i < chk->size; i++, j++) {
-		unsigned char c = 0xFF & ((char*)chk->ptr)[i];
+	for(int i = 0, j = 0; i < size; i++, j++) {
+		unsigned char c = 0xFF & ((char*)data)[i];
 
 		// hex
 		sprintf(&hbuf[j*3], "%02X ", c);
@@ -50,11 +50,16 @@ void logging_hex(log_level_t lev, chunk_t* chk)
 			sprintf(&cbuf[j*2], " .");
 
 		// end of width OR chunk
-		if(j == 15 || i+1 == chk->size) {
+		if(j == 15 || i+1 == size) {
 			j++;
 			hbuf[j*3] = cbuf[j*2] = '\0';
 			j = -1;
 			logging(lev, "      %-48s %s\n", hbuf, cbuf);
 		}
 	}
+}
+
+void logging_chk(log_level_t lev, chunk_t* chk)
+{
+	logging_hex(lev, chk->ptr, chk->size);
 }
