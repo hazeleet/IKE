@@ -13,7 +13,8 @@ CFLAGS = -Wall -Wextra -lconfig -largp
 ifeq ($(shell id -u), 0)
 all: clean prepare run
 else
-all: clean prepare compile
+all: clean prepare bear
+CFLAGS += -I/opt/homebrew/include -L/opt/homebrew/lib -Wno-unused-command-line-argument
 endif
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
@@ -25,8 +26,8 @@ $(PROGRAM): $(OBJS)
 run: $(PROGRAM)
 	$(PROGRAM)
 
-compile:
-	compiledb -n make $(PROGRAM)
+bear:
+	bear -- make $(PROGRAM)
 
 prepare:
 	mkdir -p $(OBJDIR)
