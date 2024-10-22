@@ -7,6 +7,11 @@
 #define IKE_PAYLOAD_HEADER_LENGTH 4
 #define IKE_PAYLOAD_KE_FIXED_LENGTH 4
 
+#define IKE_PROPOSAL_LAST		0
+#define IKE_PROPOSAL_MORE		2
+#define IKE_TRANSFORM_LAST	0
+#define IKE_TRANSFORM_MORE	3
+
 typedef enum {
   PLD_NO = 0,
   PLD_SA = 33,
@@ -41,11 +46,11 @@ typedef enum {
 }ike_protocol_id;
 
 typedef enum {
-  ENCR  = 1,
-  PRF   = 2,
-  INTEG = 3,
-  DH    = 4,
-  ESN   = 5,
+  IKE_ENCR  = 1,
+  IKE_PRF   = 2,
+  IKE_INTEG = 3,
+  IKE_DH    = 4,
+  IKE_ESN   = 5,
 }ike_transform_type;
 
 typedef enum {
@@ -123,21 +128,8 @@ typedef struct {
 }ike_payload_ke_t;
 
 typedef struct {
-  uint8_t   format;
-  uint16_t  type;
-  uint16_t  length;
-  uint32_t  value;
-}ike_attribute_t;
-
-typedef struct {
-  uint8_t   last;   // 0 is last, 3 is more
-  uint8_t   reserved1;
-  uint16_t  length;
-  uint8_t   type;
-  uint8_t   reserved2;
-  uint16_t  id;
-  ike_attribute_t*  attributes;
-}ike_transform_t;
+  void*   proposals;
+}ike_payload_sa_t;
 
 typedef struct {
   uint8_t   last;   // 0 is last, 2 is more
@@ -148,11 +140,24 @@ typedef struct {
   uint8_t   spi_size;
   uint8_t   num_of_transforms;
   void*     spi;
-  ike_transform_t*  transforms;
+  void*			transforms;
 }ike_proposal_t;
 
 typedef struct {
-  ike_proposal_t*   proposals;
-}ike_payload_sa_t;
+  uint8_t   last;   // 0 is last, 3 is more
+  uint8_t   reserved1;
+  uint16_t  length;
+  uint8_t   type;
+  uint8_t   reserved2;
+  uint16_t  id;
+  void*			attributes;
+}ike_transform_t;
+
+typedef struct {
+  uint8_t   format;
+  uint16_t  type;
+  uint16_t  length;
+  uint32_t  value;
+}ike_attribute_t;
 
 #endif //__IKE_PROTOCOL_H__
