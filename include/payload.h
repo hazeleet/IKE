@@ -3,6 +3,7 @@
 
 #include "ike_protocol.h"
 #include "chunk.h"
+#include "proposal.h"
 
 typedef struct payload_t payload_t;
 struct payload_t {
@@ -28,5 +29,8 @@ void          pld_nx_set(payload_t* pld, chunk_t* nonce);
 
 // KE
 void          pld_ke_set(payload_t* pld, ike_dh_id dh, chunk_t* key);
+
+// SA
+void					pld_sa_set(payload_t* pld, proposal_t* proposal);
 
 #endif //__PAYLOAD_H__

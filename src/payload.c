@@ -95,3 +95,8 @@ void pld_ke_set(payload_t* pld, ike_dh_id dh, chunk_t* key)
 	pld->KE.data = calloc(1, key->size);
 	memcpy(pld->KE.data, key->ptr, key->size);
 }
+
+void pld_sa_set(payload_t* pld, proposal_t* proposal)
+{
+	pld->SA.proposals = proposal;
+}

@@ -2,6 +2,7 @@
 #include "daemon.h"
 #include "utils.h"
 #include "exchange.h"
+#include "proposal.h"
 
 #include <stdlib.h>
 
@@ -39,6 +40,15 @@ void _ike_sa_init_i(sa_t* sa)
 	exg->header.exchange_type = IKE_SA_INIT;
 
 	// SA
+	proposal_t* proposals = ppl_create(PROTOCOL_IKE);
+	ppl_set_encr(proposals, ENCR_AES_CBC, 128);
+	ppl_set_encr(proposals, ENCR_AES_CBC, 256);
+	ppl_set_integ(proposals, AUTH_HMAC_SHA1_96);
+	ppl_set_prf(proposals, PRF_HMAC_SHA1);
+	ppl_set_dh(proposals, MODP_1024);
+	payload_t* SA = pld_create(PLD_SA);
+	pld_sa_set(SA, proposals);
+	exg_push(exg, SA);
 	// KE
 	payload_t* KE = pld_create(PLD_KE);
 	pld_ke_set(KE, sa->DH.group, sa->DH.key);
