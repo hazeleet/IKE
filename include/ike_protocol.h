@@ -6,6 +6,8 @@
 #define IKE_HEADER_LENGTH 28
 #define IKE_PAYLOAD_HEADER_LENGTH 4
 #define IKE_PAYLOAD_KE_FIXED_LENGTH 4
+#define IKE_PROPOSAL_FIXED_LENGTH 8
+#define IKE_TRANSFORM_FIXED_LENGTH 8
 
 #define IKE_PROPOSAL_LAST		0
 #define IKE_PROPOSAL_MORE		2
@@ -141,6 +143,8 @@ typedef struct {
   uint8_t   num_of_transforms;
   void*     spi;
   void*			transforms;
+
+	void*			next;
 }ike_proposal_t;
 
 typedef struct {
