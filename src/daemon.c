@@ -1,5 +1,4 @@
 #include "daemon.h"
-#include "exchange.h"
 #include <pthread.h>
 
 daemon_t IKE;
@@ -28,8 +27,8 @@ void*	_running()
 		for(sa_t* sa = IKE.sas; sa != NULL; sa = sa->next) {
 			if(sa->left.addr == dst && sa->right.addr == src) {
 				logging(DBG, "[DMN] Matched %s:%s\n", bsrc, bdst);
-				exchange_t* exg = exg_unpack(data);
-				// switch by state
+				sa_process(data);
+				break;
 			}
 		}
 		//logging(DBG, "[SAM] NotMatched %s:%s\n", bsrc, bdst);

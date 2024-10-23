@@ -3,6 +3,8 @@
 
 #include "netype.h"
 #include "ike_protocol.h"
+#include "crypto.h"
+#include "exchange.h"
 
 typedef enum {
   INIT = 0,
@@ -16,6 +18,7 @@ struct sa_t {
     ip4_addr addr;
   }left, right;
 
+	sa_state	state;
   bool      is_initiator;
   uint64_t  SPIi, SPIr;
   uint32_t  message_id;
@@ -23,16 +26,17 @@ struct sa_t {
   ike_exchange_type last_exchange;
 
   chunk_t   *Ni, *Nr;
-  struct {
-    ike_dh_id   group;
-    chunk_t*    key;
-  }DH;
+	crypto_t	crypto;
 
   sa_t*   prev;
   sa_t*   next;
 };
 
-sa_t*  sa_create();
-void   sa_push(sa_t* sa);
+sa_t*		sa_create();
+void		sa_push(sa_t* sa);
+
+void		sa_process(sa_t* this, chunk_t* data);
+
+void		sa_process_init_request(sa_t* this, exchange_t* exchange);
 
 #endif //__SA_H__
