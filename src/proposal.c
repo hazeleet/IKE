@@ -18,10 +18,13 @@ void ppl_push(proposal_t* this, proposal_t* ppl)
 
 void _ppl_set(proposal_t* this, ike_transform_type type, int id, int key_size)
 {
-	struct transform_t *transform = &this->transforms[type];
-	if(transform->size >= TRANSFORM_MAX)
-		return;
-	transform->body[transform->size].id = id;
-	transform->body[transform->size].key_size = key_size;
-	transform->size++;
+	if(this->num_of_transforms < TRANSFORM_MAX) {
+		this->transforms[this->num_of_transforms].type = type;
+		this->transforms[this->num_of_transforms].id = id;
+		this->transforms[this->num_of_transforms].key_size = key_size;
+		this->num_of_transforms++;
+	}
+	else {
+		// WTF
+	}
 }

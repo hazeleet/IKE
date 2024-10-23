@@ -10,12 +10,11 @@ struct proposal_t {
 	ike_protocol_id		protocol;
 
 	struct transform_t {
-		struct transform_body_t {
-			int id;
-			int key_size;
-		}body[TRANSFORM_MAX];
-		int size;
-	}transforms[6];
+		ike_transform_type	type;
+		int									id;
+		int									key_size;
+	}transforms[TRANSFORM_MAX];
+	int num_of_transforms;
 
 	proposal_t*		next;
 };
