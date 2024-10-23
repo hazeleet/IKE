@@ -21,6 +21,7 @@ chunk_t* exg_pack(exchange_t* exg)
 	chk_write(packed, &exg->header.flags, 1);
 	chk_rwrite(packed, &exg->header.message_id, 4);
 	chk_rwrite(packed, &exg->header.length, 4);
+	logging(DBG, "[EXG] %s packing (%d-bytes)\n", log_exchange_type(exg->header.exchange_type), exg->header.length);
 
 	if(exg->payloads) {
 		chunk_t* pld_packed = pld_pack(exg->payloads);
