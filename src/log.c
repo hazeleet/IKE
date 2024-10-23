@@ -63,3 +63,36 @@ void logging_chk(log_level_t lev, chunk_t* chk)
 {
 	logging_hex(lev, chk->ptr, chk->size);
 }
+
+char* log_exchange_type(ike_exchange_type type)
+{
+	switch (type) {
+		case IKE_SA_INIT: return "IKE SA INIT";
+		case IKE_AUTH: return "IKE AUTH";
+		case CREATE_CHILD_SA: return "CREATE CHILD SA";
+		case INFORMATIONAL: return "INFORMATIONAL";
+	}
+}
+
+char*	log_payload_type(ike_payload_type type)
+{
+	switch (type){
+		case PLD_NO: return "No";
+		case PLD_SA: return "Security Association";
+		case PLD_KE: return "Key Exchange";
+		case PLD_IDi: return "Identification - Initiator";
+		case PLD_IDr: return "Identification - Responder";
+		case PLD_CERT: return "Certificate";
+		case PLD_CERTREQ: return "Certificate Request";
+		case PLD_AUTH: return "Authentication";
+		case PLD_Nx: return "Nonce";
+		case PLD_N: return "Notify";
+		case PLD_D: return "Delete";
+		case PLD_V: return "Vendor ID";
+		case PLD_TSi: return "Traffic Selector - Initiator";
+		case PLD_TSr: return "Traffic Selector - Responder";
+		case PLD_SK: return "Encrypted and Authenticated";
+		case PLD_CP: return "Configuration";
+		case PLD_EAP: return "Extensible Authentication";
+	}
+}
