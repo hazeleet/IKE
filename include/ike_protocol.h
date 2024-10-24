@@ -5,9 +5,6 @@
 
 #define IKE_HEADER_LENGTH 28
 #define IKE_PAYLOAD_HEADER_LENGTH 4
-#define IKE_PAYLOAD_KE_FIXED_LENGTH 4
-#define IKE_PROPOSAL_FIXED_LENGTH 8
-#define IKE_TRANSFORM_FIXED_LENGTH 8
 
 #define IKE_PROPOSAL_LAST		0
 #define IKE_PROPOSAL_MORE		2
@@ -119,20 +116,24 @@ typedef struct {
   uint16_t  length;
 }ike_payload_header_t;
 
+#define IKE_PAYLOAD_Nx_FIXED_LENGTH (IKE_PAYLOAD_HEADER_LENGTH)
 typedef struct {
   void*     data;
 }ike_payload_nx_t;
 
+#define IKE_PAYLOAD_KE_FIXED_LENGTH (IKE_PAYLOAD_HEADER_LENGTH+4)
 typedef struct {
   uint16_t  dh_group;
   uint16_t  reserved;
   void*     data;
 }ike_payload_ke_t;
 
+#define IKE_PAYLOAD_SA_FIXED_LENGTH (IKE_PAYLOAD_HEADER_LENGTH)
 typedef struct {
   void*   proposals;
 }ike_payload_sa_t;
 
+#define IKE_PROPOSAL_FIXED_LENGTH 8
 typedef struct {
   uint8_t   last;   // 0 is last, 2 is more
   uint8_t   reserved;
@@ -147,6 +148,7 @@ typedef struct {
 	void*			next;
 }ike_proposal_t;
 
+#define IKE_TRANSFORM_FIXED_LENGTH 8
 typedef struct {
   uint8_t   last;   // 0 is last, 3 is more
   uint8_t   reserved1;

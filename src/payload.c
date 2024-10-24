@@ -10,7 +10,6 @@ payload_t* pld_create(ike_payload_type type)
 {
 	payload_t* this = calloc(1, sizeof(payload_t));
 	this->type = type;
-	this->header.length = IKE_PAYLOAD_HEADER_LENGTH;
 
 	return this;
 }
@@ -32,7 +31,7 @@ chunk_t* pld_pack(payload_t* pld)
 			chk_rwrite(packed, &pld->KE.dh_group, 2);
 			chk_rwrite(packed, &pld->KE.reserved, 2);
 			chk_write(packed, pld->KE.data,
-					pld->header.length - IKE_PAYLOAD_HEADER_LENGTH - IKE_PAYLOAD_KE_FIXED_LENGTH);
+					pld->header.length - IKE_PAYLOAD_KE_FIXED_LENGTH);
 			break;
 		case PLD_SA:
 			{
@@ -92,7 +91,7 @@ payload_t* pld_unpack(chunk_t* packed, ike_payload_type type)
 			break;
 		case PLD_KE:
 			{
-				int key_size = pld->header.length - IKE_PAYLOAD_HEADER_LENGTH - IKE_PAYLOAD_KE_FIXED_LENGTH;
+				int key_size = pld->header.length - IKE_PAYLOAD_KE_FIXED_LENGTH;
 				chk_rread(packed, &pld->KE.dh_group, 2);
 				chk_rread(packed, &pld->KE.reserved, 2);
 				pld->KE.data = calloc(1, key_size);
@@ -164,19 +163,35 @@ ike_proposal_t*	_pld_sa_unpack(chunk_t* packed)
 	return this;
 }
 
-void pld_nx_set(payload_t* pld, chunk_t* nonce)
+void pld_nx_set(payload_t* this, chunk_t* nonce)
 {
-	pld->header.length += nonce->size;
-	pld->Nx.data = calloc(1, nonce->size);
-	memcpy(pld->Nx.data, nonce->ptr, nonce->size);
+	this->header.length = IKE_PAYLOAD_Nx_FIXED_LENGTH + nonce->size;
+	this->Nx.data = calloc(1, nonce->size);
+	memcpy(this->Nx.data, nonce->ptr, nonce->size);
 }
 
-void pld_ke_set(payload_t* pld, ike_dh_id dh, chunk_t* key)
+chunk_t* pld_nx_get(payload_t* this)
 {
-	pld->header.length += IKE_PAYLOAD_KE_FIXED_LENGTH + key->size;
-	pld->KE.dh_group = dh;
-	pld->KE.data = calloc(1, key->size);
-	memcpy(pld->KE.data, key->ptr, key->size);
+	chunk_t* nonce = chk_create();
+	chk_write(nonce, this->Nx.data,
+			this->header.length - IKE_PAYLOAD_HEADER_LENGTH);
+	return nonce;
+}
+
+void pld_ke_set(payload_t* this, ike_dh_id dh, chunk_t* key)
+{
+	this->header.length = IKE_PAYLOAD_KE_FIXED_LENGTH + key->size;
+	this->KE.dh_group = dh;
+	this->KE.data = calloc(1, key->size);
+	memcpy(this->KE.data, key->ptr, key->size);
+}
+
+chunk_t* pld_ke_get_key(payload_t* this)
+{
+	chunk_t* key = chk_create();
+	chk_write(key, this->KE.data,
+			this->header.length - IKE_PAYLOAD_KE_FIXED_LENGTH);
+	return key;
 }
 
 ike_proposal_t* _pld_sa_set_proposal(proposal_t* proposal, int number)
@@ -212,8 +227,13 @@ ike_proposal_t* _pld_sa_set_proposal(proposal_t* proposal, int number)
 	return this;
 }
 
-void pld_sa_set(payload_t* pld, proposal_t* proposal)
+void pld_sa_set(payload_t* this, proposal_t* proposal)
 {
-	pld->SA.proposals = _pld_sa_set_proposal(proposal, 1);
-	pld->header.length += ((ike_proposal_t*)pld->SA.proposals)->length;
+	this->SA.proposals = _pld_sa_set_proposal(proposal, 1);
+	this->header.length = IKE_PAYLOAD_SA_FIXED_LENGTH
+		+ ((ike_proposal_t*)this->SA.proposals)->length;
+}
+
+proposal_t* pld_sa_get(payload_t* this)
+{
 }

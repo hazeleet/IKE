@@ -23,12 +23,15 @@ chunk_t*      pld_pack(payload_t* pld);
 payload_t*    pld_unpack(chunk_t* packed, ike_payload_type type);
 
 // Nx
-void          pld_nx_set(payload_t* pld, chunk_t* nonce);
+void          pld_nx_set(payload_t* this, chunk_t* nonce);
+chunk_t*      pld_nx_get(payload_t* this);
 
 // KE
-void          pld_ke_set(payload_t* pld, ike_dh_id dh, chunk_t* key);
+void          pld_ke_set(payload_t* this, ike_dh_id dh, chunk_t* key);
+chunk_t*      pld_ke_get_key(payload_t* this);
 
 // SA
-void					pld_sa_set(payload_t* pld, proposal_t* proposal);
+void					pld_sa_set(payload_t* this, proposal_t* proposal);
+proposal_t*   pld_sa_get(payload_t* this);
 
 #endif //__PAYLOAD_H__
