@@ -27,7 +27,7 @@ void*	_running()
 		for(sa_t* sa = IKE.sas; sa != NULL; sa = sa->next) {
 			if(sa->left.addr == dst && sa->right.addr == src) {
 				logging(DBG, "[DMN] Matched %s:%s\n", bsrc, bdst);
-				sa_process(data);
+				sa_process(sa, data);
 				break;
 			}
 		}
