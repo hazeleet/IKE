@@ -8,8 +8,7 @@
 
 typedef enum {
   INIT = 0,
-  WAIT_INIT_RES,
-  WAIT_AUTH_RES,
+  INIT_ESTABLISHED,
 }sa_state;
 
 typedef struct sa_t sa_t;
@@ -36,7 +35,5 @@ sa_t*		sa_create();
 void		sa_push(sa_t* sa);
 
 void		sa_process(sa_t* this, chunk_t* data);
-
-void		sa_process_init_request(sa_t* this, exchange_t* exchange);
 
 #endif //__SA_H__

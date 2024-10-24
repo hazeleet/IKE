@@ -6,9 +6,8 @@
 
 #include <stdlib.h>
 
-void _ike_sa_init_i(sa_t* sa);
-
-void make_ike_sa_init_request(sa_t* this);
+void _make_ike_sa_init_request(sa_t* this);
+void _make_ike_sa_init_response(sa_t* this, exchange_t* exchange);
 
 sa_t* sa_create()
 {
@@ -25,10 +24,10 @@ void sa_push(sa_t* sa)
 	IKE.sas = sa;
 
 	// IKE_SA_INIT make&send
-	make_ike_sa_init_request(sa);
+	_make_ike_sa_init_request(sa);
 }
 
-void make_ike_sa_init_request(sa_t* this)
+void _make_ike_sa_init_request(sa_t* this)
 {
 	this->is_initiator = true;
 	this->SPIi = get_spi();
@@ -62,16 +61,14 @@ void make_ike_sa_init_request(sa_t* this)
 	// send
 	chunk_t* packed = exg_pack(exg);
 	net_send(packed, this->left.addr, this->right.addr);
-	// change state
-	this->state = WAIT_INIT_RES;
 }
 
-void sa_process_init_request(sa_t* this, exchange_t* exchange)
+void _make_ike_sa_init_response(sa_t* this, exchange_t* exchange)
 {
 	this->is_initiator = false;
 	this->SPIi = exchange->header.SPIi;
 	this->SPIr = get_spi();
-	this->message_id = exchange->header.message_id+1;
+	this->message_id = exchange->header.message_id;
 
 	// choose proposal
 
@@ -80,4 +77,13 @@ void sa_process_init_request(sa_t* this, exchange_t* exchange)
 void sa_process(sa_t* this, chunk_t* data)
 {
 	exchange_t* exg = exg_unpack(data);
+	ike_header_t* hdr = &exg->header;
+	switch(this->state) {
+		case INIT:
+			if(hdr->exchange_type == IKE_SA_INIT && hdr->SPIr == 0)
+				_make_ike_sa_init_response(this, exg);
+			break;
+		case INIT_ESTABLISHED:
+			break;
+	}
 }
